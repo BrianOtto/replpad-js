@@ -108,6 +108,7 @@ askChoice: function [
     success [text!]
     failure [block!]
     /failed
+    return: [text!]
 ][
     if not failed [
         print rejoin [request "^/"]
@@ -117,15 +118,20 @@ askChoice: function [
     
     trim/lines resp
     
-    found: find choices resp
-    
-    if found [
-        print rejoin ["^/^/" success first found]
-    ][
-        
-        print rejoin ["^/^/" pick failure random length? failure "^/"]            
-        askChoice/failed choices request success failure
+    if find resp "/" [
+        if not void? attempt [
+            ; Why is map/2 failing here? Is it in scope?
+            found: find choices do resp
+            
+            if found [
+                print rejoin ["^/^/" success first found "!"]
+                return first found
+            ]
+        ][]
     ]
+    
+    print rejoin ["^/^/" pick failure random length? failure "^/"]
+    askChoice/failed choices request success failure
 ]
 
 begin: function [] [
@@ -323,7 +329,7 @@ begin: function [] [
     
     askUser 
         "insert tail backpack 'rope"
-        "^/Next put your rope into the backpack, but place it on the bottom so you don't ruin your bread."
+        "^/Next put your rope into the backpack, but place it at the bottom so you don't ruin your bread."
         "^/Excellent, you never know when rope will come in handy!"
         ["Well, don't go hanging yourself just yet! Persevere and you will succeed."]
     
@@ -359,23 +365,77 @@ begin: function [] [
     
     prin "^/"
     
-    print "^/The map has several destinations listed. Choose one!"
+    print "^/The map has several paths to choose from. Pick one!^/"
     
     ; Richard Bartle's Player Types
     map: [
-        "Collect Ancient Treasure" ; Achiever
-        "Explore the Lost Ruins"   ; Explorer
-        "Talk with the Wise Men"   ; Socializer
-        "Battle Undead Creatures"  ; Killer
+        "collect ancient treasure" ; Achiever
+        "explore the lost ruins"   ; Explorer
+        "talk with the wise men"   ; Socializer
+        "battle undead creatures"  ; Killer
     ]
     
     probe map
     
-    askChoice 
-        ["map/1" "map/2" "map/3" "map/4"]
+    path: askChoice 
+        map
         "^/Where do you want to go?"
-        "You have choosen: "
-        ["Nope! Hint: TODO"]
+        "You have choose to "
+        ["Nope! Hint: Try using the word ^"map^""]
+    
+    prin "^/Press any key to continue ... " input
+    
+    if path != map/4 [
+        print "^/So, uhm, my mistake. This is just a demo and that path is not available yet."
+        print "How about we do this instead? Press any key to continue ... " input
+    ]
+    
+    print/html "<hr>"
+    prin "Level 4"
+    print/html "<hr>"
+    
+    print/html "<img src='/game/icons/monster.png' width='100'>"
+    
+    print "It's time to BAAAAAAAAAAAAAAAAATTLE UNDEAD CREATURES !!!!"
+    
+    js-do {
+        // William Tell Overture
+        playNote('C', 250)
+        playNote('C', 250)
+        
+        playNote('C', 500)
+        playNote('C', 250)
+        playNote('C', 250)
+        playNote('C', 500)
+        playNote('C', 250)
+        playNote('C', 250)
+        
+        playNote('F', 500)
+        playNote('G', 500)
+        playNote('A', 500)
+        playNote('C', 250)
+        playNote('C', 250)
+        
+        playNote('C', 500)
+        playNote('C', 250)
+        playNote('C', 250)
+        playNote('F', 500)
+        playNote('A', 250)
+        playNote('A', 250)
+        
+        playNote('G', 500)
+        playNote('E', 500)
+        playNote('C', 500)
+    }
+    
+    prin "^/Are you ready? [n/Y] "
+    
+    resp: input
+    
+    if resp == "n" [
+        print "^/^/Too bad, you can't turn back now!"
+        prin "^/Press any key to continue ... " input
+    ]
 ]
 
 begin
