@@ -6,10 +6,10 @@
 random/seed now
 
 js-do {
-    var beepTimeout = null
+    var audioTimeout = null
 
-    function beep(volume, frequency, duration) {
-        if (!beepTimeout) {
+    function playAudio(volume, frequency, duration) {
+        if (!audioTimeout) {
             var ac = new AudioContext()
             
             acOscillator = ac.createOscillator()
@@ -22,15 +22,31 @@ js-do {
             acGain.connect(ac.destination)
             acGain.gain.value = volume * 0.01
 
-            beepTimeout = setTimeout(function() {
+            audioTimeout = setTimeout(function() {
                 acOscillator.stop()
-                beepTimeout = null
+                audioTimeout = null
             }, duration)
             
             acOscillator.start()
         } else {
-            setTimeout(function() { beep(volume, frequency, duration) }, 100)
+            setTimeout(function() { playAudio(volume, frequency, duration) }, 10)
         }
+    }
+    
+    function playNote(note, duration) {
+        frequency = 0
+        
+        switch (note) {
+            case 'A' : frequency = 220.0000; break
+            case 'B' : frequency = 246.9417; break
+            case 'C' : frequency = 261.6256; break
+            case 'D' : frequency = 293.6648; break
+            case 'E' : frequency = 329.6276; break
+            case 'F' : frequency = 349.2282; break
+            case 'G' : frequency = 391.9954; break
+        }
+        
+        playAudio(999, frequency, duration)
     }
 }
 
@@ -119,7 +135,7 @@ begin: function [] [
     
     askUser 
         "backpack: []"
-        "All adventurers need a backpack to carry their supplies. Let's create an empty one now using the syntax you just learned."
+        "All adventurers need a backpack to carry their supplies. Let's create one now using the syntax you just learned."
         "^/Excellent, you have created a backpack!"
         [
             "Nope! Hint: It should be a block so that it can hold multiple items."
@@ -139,12 +155,20 @@ begin: function [] [
     print "Congratulations! You have been given the power of the all-seeing eye!"
     print "It allows you to probe into the mysterious unknown."
     
-    js-do { beep(999, 100, 1500) }
+    js-do {
+        // Bohemian Rhapsody
+        playNote('D', 250) // eas-
+        playNote('D', 250) // y
+        playNote('C', 500) // come
+        
+        playNote('B', 250) // eas-
+        playNote('B', 250) // y
+        playNote('C', 500) // go
+    }
     
     prin "^/Press any key to continue ... " input
     
     print "^/"
-    
     print "In Rebol, the ^"probe^" command allows you to see the unevaluated ^"value^" that a ^"word^" contains."
     print "This is useful for debugging, and it can be placed anywhere a value is returned."
     
@@ -156,8 +180,8 @@ begin: function [] [
     askUser 
        "probe backpack"
        "^/Try the ^"probe^" command now, and let's see what is inside your backpack."
-       "Great job, but it looks like there is nothing in your backpack!"
-       ["Hmm, the eye is not working. Maybe you're not looking at it correctly. Try again!"]
+       "Great job, but there is nothing in your backpack!"
+       ["Hmm, your power is weak. The eye is not working. Try again!"]
     
     print "^/Laying on the floor is a few items for your journey."
     
@@ -175,7 +199,7 @@ begin: function [] [
     print "'sword"
     
     print "^/In Rebol, a ^"word^" can be used as a symbol. You do this by prefixing it with a single quote."
-    print "This causes the word to not be evaluated and instead the literal value is returned."
+    print "This causes the word to return its literal value instead of being evaluated."
     
     askUser 
        "probe 'bread"
@@ -194,10 +218,65 @@ begin: function [] [
     print "Congratulations! You have everything you need to venture outside."
     print "Let's pack our things and map a route to our next destination."
     
-    js-do { beep(999, 100, 750) }
-    js-do { beep(999, 500, 750) }
+    js-do {
+        // Star Wars Theme
+        playNote('D', 333)
+        playNote('D', 333)
+        playNote('D', 333)
+        
+        playNote('G', 1000)
+        playNote('D', 1000)
+        
+        playNote('C', 166)
+        playNote('B', 166)
+        playNote('A', 166)
+        playNote('G', 1000)
+        playNote('D', 500)
+        
+        playNote('C', 166)
+        playNote('B', 166)
+        playNote('A', 166)
+        playNote('G', 1000)
+        playNote('D', 500)
+        
+        playNote('C', 166)
+        playNote('B', 166)
+        playNote('C', 166)
+        playNote('A', 1000)
+    }
     
     prin "^/Press any key to continue ... " input
+    
+    print "^/In Rebol, you can add words or values to a ^"block^" by inserting into it."
+    
+    print "^/Here is an example."
+    
+    print/html "<code>languages: [^"Lisp^" ^"Pascal^"]</code>"
+    print/html "<code>insert languages ^"Rebol^"</code>"
+    
+    prin "^/But keep in mind this adds it to the beginning ... " input
+    
+    print/html "<fieldset><legend>Result</legend><pre>[^"Rebol^" ^"Lisp^" ^"Pascal^"]</pre></fieldset>"
+    
+    print "^/If you wanted to add it to the end, or tail, of the "block" then you would do this ... "
+    print/html "<code>insert tail languages ^"Rebol^"</code>"
+    
+    print/html "<fieldset><legend>Result</legend><pre>[^"Lisp^" ^"Pascal^" ^"Rebol^"]</pre></fieldset>"
+    
+    prin "^/And if you wanted to insert into the second, or next, position then you would do this ... " input
+    
+    print/html "<code>insert next languages ^"Rebol^"</code>"
+    print/html "<fieldset><legend>Result</legend><pre>[^"Lisp^" ^"Rebol^" ^"Pascal^"]</pre></fieldset>"
+    
+    print "^/All blocks have a starting position that defaults to the beginning."
+    print "You must change this position to insert data there, and this is what ^"tail^" and ^"next^" do."
+    
+    askUser 
+       "probe 'bread"
+       "^/Try to ^"probe^" the bread and see what you get."
+       "As you can see, the literal value is returned"
+       ["No, the bread you baffoon. I told you this journey required wits!" "Nope! Hint: Remember to prefix the single quote."]
+    
 ]
 
 begin
