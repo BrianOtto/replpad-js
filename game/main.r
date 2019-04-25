@@ -1,5 +1,5 @@
-; ?do=game
-; replpad-write as text! read %game/main.r
+; usage = ?do=game
+; to see source = replpad-write as text! read %game/main.r
 ; replace all quoted syntax (e.g. "block") with links to documentation
 ; print appears to be adding extra line divs sometimes
 
@@ -90,7 +90,7 @@ askUser: function [
     
     prin ">> " resp: input
     
-    trim resp
+    trim/lines resp
     
     either resp == correct [
         do resp
@@ -99,6 +99,32 @@ askUser: function [
         
         print rejoin ["^/^/" pick failure random length? failure "^/"]            
         askUser/failed correct request success failure
+    ]
+]
+
+askChoice: function [
+    choices [block!]
+    request [text!]
+    success [text!]
+    failure [block!]
+    /failed
+][
+    if not failed [
+        print rejoin [request "^/"]
+    ]
+    
+    prin ">> " resp: input
+    
+    trim/lines resp
+    
+    found: find choices resp
+    
+    if found [
+        print rejoin ["^/^/" success first found]
+    ][
+        
+        print rejoin ["^/^/" pick failure random length? failure "^/"]            
+        askChoice/failed choices request success failure
     ]
 ]
 
@@ -178,10 +204,10 @@ begin: function [] [
     print/html "<fieldset><legend>Result</legend><pre>[^"John McCarthy^" name ^"Niklaus Wirth^"]</pre></fieldset>"
     
     askUser 
-       "probe backpack"
-       "^/Try the ^"probe^" command now, and let's see what is inside your backpack."
-       "Great job, but there is nothing in your backpack!"
-       ["Hmm, your power is weak. The eye is not working. Try again!"]
+        "probe backpack"
+        "^/Try the ^"probe^" command now, and let's see what is inside your backpack."
+        "Great job, but there is nothing in your backpack!"
+        ["Hmm, your power is weak. The eye is not working. Try again!"]
     
     print "^/Laying on the floor is a few items for your journey."
     
@@ -202,10 +228,13 @@ begin: function [] [
     print "This causes the word to return its literal value instead of being evaluated."
     
     askUser 
-       "probe 'bread"
-       "^/Try to ^"probe^" the bread and see what you get."
-       "As you can see, the literal value is returned"
-       ["No, the bread you baffoon. I told you this journey required wits!" "Nope! Hint: Remember to prefix the single quote."]
+        "probe 'bread"
+        "^/Try to ^"probe^" the bread and see what you get."
+        "As you can see, the literal value is returned."
+        [
+            "No, the bread you baffoon. I told you this journey required wits!"
+            "Nope! Hint: Remember to prefix the single quote."
+        ]
     
     prin "^/Press any key to continue ... " input
     
@@ -247,36 +276,106 @@ begin: function [] [
     
     prin "^/Press any key to continue ... " input
     
-    print "^/In Rebol, you can add words or values to a ^"block^" by inserting into it."
+    print "^/"
+    
+    print "In Rebol, you can add words or values to a ^"block^" by inserting them."
     
     print "^/Here is an example."
     
     print/html "<code>languages: [^"Lisp^" ^"Pascal^"]</code>"
     print/html "<code>insert languages ^"Rebol^"</code>"
     
-    prin "^/But keep in mind this adds it to the beginning ... " input
+    print "^/Where do you think it will get inserted?"
+    prin "^/Press any key to see ... " input
+    
+    prin "^/"
     
     print/html "<fieldset><legend>Result</legend><pre>[^"Rebol^" ^"Lisp^" ^"Pascal^"]</pre></fieldset>"
     
-    print "^/If you wanted to add it to the end, or tail, of the "block" then you would do this ... "
+    print "It gets inserted at the beginning."
+    print "^/If you want to insert it at the end, or tail, of the ^"block^" then you would do this ... "
     print/html "<code>insert tail languages ^"Rebol^"</code>"
     
+    prin "^/Press any key to see ... " input
+    
+    prin "^/"
     print/html "<fieldset><legend>Result</legend><pre>[^"Lisp^" ^"Pascal^" ^"Rebol^"]</pre></fieldset>"
     
-    prin "^/And if you wanted to insert into the second, or next, position then you would do this ... " input
-    
+    print "If you want to insert it as the second, or next, position then you would do this ... "
     print/html "<code>insert next languages ^"Rebol^"</code>"
+    
+    prin "^/Press any key to see ... " input
+    
+    prin "^/"
     print/html "<fieldset><legend>Result</legend><pre>[^"Lisp^" ^"Rebol^" ^"Pascal^"]</pre></fieldset>"
     
-    print "^/All blocks have a starting position that defaults to the beginning."
+    print "All blocks have a starting position that defaults to the beginning."
     print "You must change this position to insert data there, and this is what ^"tail^" and ^"next^" do."
     
     askUser 
-       "probe 'bread"
-       "^/Try to ^"probe^" the bread and see what you get."
-       "As you can see, the literal value is returned"
-       ["No, the bread you baffoon. I told you this journey required wits!" "Nope! Hint: Remember to prefix the single quote."]
+        "insert backpack 'bread"
+        "^/Now try placing the bread into your backpack."
+        "^/Excellent, you now have something to eat on your journey!"
+        [
+            "Nope! Hint: There is no need to worry about the position when inserting the first item."
+            "Nope! Hint: Remember to use the literal value of the word."
+        ]
     
+    askUser 
+        "insert tail backpack 'rope"
+        "^/Next put your rope into the backpack, but place it on the bottom so you don't ruin your bread."
+        "^/Excellent, you never know when rope will come in handy!"
+        ["Well, don't go hanging yourself just yet! Persevere and you will succeed."]
+    
+    askUser 
+        "insert next backpack 'sword"
+        "^/Huh, what did you say? No, no, no! Of course there is room for the sword.^/Try placing it next to the rope. You will see."
+        "^/Excellent, you are now ready for anything!"
+        ["Uhm, I asked you to place it *next* to the rope!"]
+    
+    print "^/Let's verify we have everything in our backpack before we leave."
+    
+    askUser 
+        "probe backpack"
+        "^/Do you remember how to do that?"
+        "Perfect, we are set!"
+        ["Hmm, this must be embarrassing for you. Are you sure you can handle the all-seeing eye?"]
+    
+    prin "^/Press any key to continue ... " input
+    
+    prin "^/"
+    
+    print "^/Ok, brave adventurer. Now it's time to choose!"
+    print "^/In Rebol, you can retrieve values from a ^"block^" by specifying a ^"path^" to its position."
+    print "Just remember the starting position is always 1."
+    
+    print "^/Here is an example."
+    
+    print/html "<code>coins: [^"copper^" ^"silver^" ^"gold^"]</code>"
+    print/html "<code>coins/2</code>"
+    print/html "<fieldset><legend>Result</legend><pre>^"silver^"</pre></fieldset>"
+    
+    prin "Press any key to continue ... " input
+    
+    prin "^/"
+    
+    print "^/The map has several destinations listed. Choose one!"
+    
+    ; Richard Bartle's Player Types
+    map: [
+        "Collect Ancient Treasure" ; Achiever
+        "Explore the Lost Ruins"   ; Explorer
+        "Talk with the Wise Men"   ; Socializer
+        "Battle Undead Creatures"  ; Killer
+    ]
+    
+    probe map
+    
+    askChoice 
+        ["map/1" "map/2" "map/3" "map/4"]
+        "^/Where do you want to go?"
+        "You have choosen: "
+        ["Nope! Hint: TODO"]
 ]
 
 begin
