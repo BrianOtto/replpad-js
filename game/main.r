@@ -2,6 +2,7 @@
 ; to see source = replpad-write as text! read %game/main.r
 ; replace all quoted syntax (e.g. "block") with links to documentation
 ; print appears to be adding extra line divs sometimes
+; audio sometimes plays out of sync
 
 random/seed now
 
@@ -91,6 +92,10 @@ askUser: function [
     prin ">> " resp: input
     
     trim/lines resp
+    
+    if resp == "fight" [
+        fight return
+    ]
     
     if resp == "cheat" [
         do correct
@@ -407,6 +412,10 @@ begin: function [] [
         prin "How about we do something else instead? Press any key to continue ... " input
     ]
     
+    fight
+]
+
+fight: function [] [
     print/html "<hr>"
     prin "Level 4"
     print/html "<hr>"
