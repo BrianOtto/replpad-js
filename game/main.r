@@ -5,6 +5,8 @@
 
 random/seed now
 
+map: []
+
 js-do {
     var audioTimeout = null
 
@@ -92,6 +94,12 @@ askUser: function [
     
     trim/lines resp
     
+    if resp == "cheat" [
+        do correct
+        print rejoin ["^/" success]
+        return
+    ]
+    
     either resp == correct [
         do resp
         print rejoin ["^/" success]
@@ -104,6 +112,7 @@ askUser: function [
 
 askChoice: function [
     choices [block!]
+    correct [block!]
     request [text!]
     success [text!]
     failure [block!]
@@ -118,20 +127,14 @@ askChoice: function [
     
     trim/lines resp
     
-    if find resp "/" [
-        if not void? attempt [
-            ; Why is map/2 failing here? Is it in scope?
-            found: find choices do resp
-            
-            if found [
-                print rejoin ["^/^/" success first found "!"]
-                return first found
-            ]
-        ][]
+    either find correct resp [
+        match: pick choices to integer! next find resp "/"
+        print rejoin ["^/^/" success match "!"]
+        return match
+    ][
+        print rejoin ["^/^/" pick failure random length? failure "^/"]
+        askChoice/failed choices correct request success failure
     ]
-    
-    print rejoin ["^/^/" pick failure random length? failure "^/"]
-    askChoice/failed choices request success failure
 ]
 
 begin: function [] [
@@ -379,6 +382,7 @@ begin: function [] [
     
     path: askChoice 
         map
+        ["map/1" "map/2" "map/3" "map/4"]
         "^/Where do you want to go?"
         "You have choose to "
         ["Nope! Hint: Try using the word ^"map^""]
@@ -386,8 +390,8 @@ begin: function [] [
     prin "^/Press any key to continue ... " input
     
     if path != map/4 [
-        print "^/So, uhm, my mistake. This is just a demo and that path is not available yet."
-        print "How about we do this instead? Press any key to continue ... " input
+        print "^/^/So, uhm, my mistake. This is just a demo and that path is not available yet."
+        prin "How about we do this instead? Press any key to continue ... " input
     ]
     
     print/html "<hr>"
@@ -396,7 +400,7 @@ begin: function [] [
     
     print/html "<img src='/game/icons/monster.png' width='100'>"
     
-    print "It's time to BAAAAAAAAAAAAAAAAATTLE UNDEAD CREATURES !!!!"
+    print "It's time to BATTLE UNDEAD CREATURES !!!!"
     
     js-do {
         // William Tell Overture
