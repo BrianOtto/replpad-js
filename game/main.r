@@ -378,14 +378,29 @@ begin: function [] [
     
     probe map
     
-    path: askChoice 
-        map
-        ["map/1" "map/2" "map/3" "map/4"]
-        "^/Where do you want to go?"
-        "You have choosen to "
-        ["Nope! Hint: Try using the word ^"map^""]
+    change: "c"
     
-    prin "^/Press any key to continue ... " input
+    while [change == "c"] [ 
+        path: askChoice 
+            map
+            ["map/1" "map/2" "map/3" "map/4"]
+            "^/Where do you want to go?"
+            "You have choosen to "
+            ["Nope! Hint: Try using the word ^"map^""]
+        
+        switch path [
+            map/1 [print "- A tutorial on files and ports"]
+            map/2 [print "- A tutorial on functions and objects"]
+            map/3 [print "- A tutorial on parse and dialects"]
+            map/4 [print "- A tutorial on conditionals and loops"]
+        ]
+        
+        prin "^/You can [c] hange your path or press any other key to continue ... "
+        
+        change: input
+        
+        if change == "c" [prin "^/"]
+    ]
     
     if path != map/4 [
         print "^/^/So, uhm, my mistake. This is just a demo and that path is not available yet."
