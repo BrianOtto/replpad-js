@@ -5,8 +5,6 @@
 
 random/seed now
 
-map: []
-
 js-do {
     var audioTimeout = null
 
@@ -370,7 +368,7 @@ begin: function [] [
     
     print "^/The map has several paths to choose from. Pick one!^/"
     
-    ; Richard Bartle's Player Types
+    ; Richard Bartle's player types
     map: [
         "collect ancient treasure" ; Achiever
         "explore the lost ruins"   ; Explorer
