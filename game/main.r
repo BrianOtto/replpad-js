@@ -384,7 +384,7 @@ begin: function [] [
         map
         ["map/1" "map/2" "map/3" "map/4"]
         "^/Where do you want to go?"
-        "You have choose to "
+        "You have choosen to "
         ["Nope! Hint: Try using the word ^"map^""]
     
     prin "^/Press any key to continue ... " input
