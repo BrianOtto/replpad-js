@@ -48,7 +48,7 @@ js-do {
             case 'G' : frequency = 391.9954; break
         }
         
-        playAudio(999, frequency, duration)
+        playAudio(1000, frequency, duration)
     }
 }
 
@@ -391,7 +391,7 @@ begin: function [] [
     
     if path != map/4 [
         print "^/^/So, uhm, my mistake. This is just a demo and that path is not available yet."
-        prin "How about we do this instead? Press any key to continue ... " input
+        prin "How about we do something else instead? Press any key to continue ... " input
     ]
     
     print/html "<hr>"
@@ -403,33 +403,18 @@ begin: function [] [
     print "It's time to BATTLE UNDEAD CREATURES !!!!"
     
     js-do {
-        // William Tell Overture
-        playNote('C', 250)
+        // Fur Elise
+        playNote('E', 250)
+        playNote('D', 250)
+        
+        playNote('E', 250)
+        playNote('D', 250)
+        playNote('E', 250)
+        playNote('B', 250)
+        playNote('D', 250)
         playNote('C', 250)
         
-        playNote('C', 500)
-        playNote('C', 250)
-        playNote('C', 250)
-        playNote('C', 500)
-        playNote('C', 250)
-        playNote('C', 250)
-        
-        playNote('F', 500)
-        playNote('G', 500)
-        playNote('A', 500)
-        playNote('C', 250)
-        playNote('C', 250)
-        
-        playNote('C', 500)
-        playNote('C', 250)
-        playNote('C', 250)
-        playNote('F', 500)
-        playNote('A', 250)
-        playNote('A', 250)
-        
-        playNote('G', 500)
-        playNote('E', 500)
-        playNote('C', 500)
+        playNote('A', 625)
     }
     
     prin "^/Are you ready? [n/Y] "
