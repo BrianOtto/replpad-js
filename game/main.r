@@ -174,7 +174,7 @@ begin: func [] [
     
     askUser 
         "backpack: []"
-        "All adventurers need a backpack to carry their supplies. Let's create one now using the syntax you just learned."
+        "All adventurers need a backpack to carry their supplies. Let's create an empty one now using the syntax you just learned."
         "^/Excellent, you have created a backpack!"
         [
             "Nope! Hint: It should be a block so that it can hold multiple items."
