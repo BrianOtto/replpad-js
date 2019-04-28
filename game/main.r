@@ -17,9 +17,17 @@ js-do {
             acGain = ac.createGain()
 
             acOscillator.connect(acGain)
-            acOscillator.frequency.value = frequency
             acOscillator.type = 'square'
-
+            
+            if (!!window.chrome) {
+                // setting value directly will not work on Chrome
+                // see https://stackoverflow.com/questions/32239560/
+                acOscillator.frequency.setValueAtTime(frequency, 0)
+            } else {
+                // this works better in Firefox
+                acOscillator.frequency.value = frequency
+            }
+            
             acGain.connect(ac.destination)
             acGain.gain.value = volume * 0.01
 
@@ -30,7 +38,7 @@ js-do {
             
             acOscillator.start()
         } else {
-            setTimeout(function() { playAudio(volume, frequency, duration) }, 10)
+            setTimeout(function() { playAudio(volume, frequency, duration) }, 50)
         }
     }
     
