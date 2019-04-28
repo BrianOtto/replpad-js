@@ -560,6 +560,10 @@ fight: func [] [
         
         trim/lines conditional
         
+        if not find/part conditional "if" 2 [
+            conditional: ""
+        ]
+        
         either all [random true healthUndead < max] [
             heal: random max - healthUndead
             healthUndead: me + heal
@@ -573,9 +577,13 @@ fight: func [] [
                 if not empty? conditional [
                     attempt [
                         do conditional
-                    ][
-                        prin "^/^/You tried to defend with an invalid conditional."
                     ]
+                    ; get this to display when the conditional is invalid
+                    ; using a "not void?" or "not error? try" doesn't appear 
+                    ; to work when the IF body doesn't execute
+                    ; [
+                    ;     prin "^/^/You tried to defend with an invalid conditional."
+                    ; ]
                     
                     
                 ]
