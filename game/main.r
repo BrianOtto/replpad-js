@@ -538,10 +538,10 @@ fight: func [] [
             ]
             
             either health < max [
-                heal: random max - health
-                health: me + heal
+                hit: random max - health
+                health: me + hit
                 
-                prin rejoin ["^/^/Your health increases by " heal]
+                prin rejoin ["^/^/Your health increases by " hit]
             ][
                 prin "^/^/You fool! You already have full health."
             ]
@@ -565,10 +565,10 @@ fight: func [] [
         ]
         
         either all [random true healthUndead < max] [
-            heal: random max - healthUndead
-            healthUndead: me + heal
+            hit: random max - healthUndead
+            healthUndead: me + hit
             
-            prin rejoin ["^/^/The creature's health has increased by " heal]
+            prin rejoin ["^/^/The creature's health has increased by " hit]
         ][
             if healthUndead > 0 [
                 undead-attack: pick attacks random length? attacks
@@ -584,8 +584,6 @@ fight: func [] [
                     ; [
                     ;     prin "^/^/You tried to defend with an invalid conditional."
                     ; ]
-                    
-                    
                 ]
                 
                 if actions == actionsBefore [
