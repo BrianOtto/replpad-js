@@ -181,7 +181,7 @@ begin: func [] [
             "Nope! Hint: Try naming it ^"backpack^"."
         ]
     
-    print/html "<img src='/game/icons/backpack.png' width='100'>"
+    print/html "<img src='game/icons/backpack.png' width='100'>"
     
     prin "Did you hear something? (turn up the volume and press any key) ... " input
     
@@ -189,7 +189,7 @@ begin: func [] [
     prin "Level 2"
     print/html "<hr>"
     
-    print/html "<img src='/game/icons/probe.png' width='100'>"
+    print/html "<img src='game/icons/probe.png' width='100'>"
     
     print "Congratulations! You have been given the power of the all-seeing eye!"
     print "It allows you to probe into the mysterious unknown."
@@ -228,13 +228,13 @@ begin: func [] [
     
     prin "^/"
     
-    print/html "<img src='/game/icons/bread.png' width='100'>"
+    print/html "<img src='game/icons/bread.png' width='100'>"
     print "'bread"
     
-    print/html "<img src='/game/icons/rope.png' width='100'>"
+    print/html "<img src='game/icons/rope.png' width='100'>"
     print "'rope"
     
-    print/html "<img src='/game/icons/sword.png' width='100'>"
+    print/html "<img src='game/icons/sword.png' width='100'>"
     print "'sword"
     
     print "^/In Rebol, a ^"word^" can be used as a symbol. You do this by prefixing it with a single quote."
@@ -255,7 +255,7 @@ begin: func [] [
     prin "Level 3"
     print/html "<hr>"
     
-    print/html "<img src='/game/icons/map.png' width='100'>"
+    print/html "<img src='game/icons/map.png' width='100'>"
     
     print "Congratulations! You have everything you need to venture outside."
     print "Let's pack our things and map a route to our next destination."
@@ -421,7 +421,7 @@ fight: func [] [
     prin "Level 4"
     print/html "<hr>"
     
-    print/html "<img src='/game/icons/monster.png' width='100'>"
+    print/html "<img src='game/icons/monster.png' width='100'>"
     
     print "It's time to BATTLE UNDEAD CREATURES !!!!"
     
@@ -608,7 +608,7 @@ fight: func [] [
     
     either health > 0 [
         prin "^/"
-        print/html "<img src='/game/icons/treasure.png' width='100'>"
+        print/html "<img src='game/icons/treasure.png' width='100'>"
         print "Congratulations! You have defeated the creature and stolen its treasure!"
         
         js-do {
@@ -639,7 +639,7 @@ fight: func [] [
         }
     ][
         prin "^/"
-        print/html "<img src='/game/icons/skull.png' width='100'>"
+        print/html "<img src='game/icons/skull.png' width='100'>"
         print "You died. Oh, and it looks like the creature took a snack for the road."
     ]
     
