@@ -78,7 +78,7 @@ css-do {
     }
 }
 
-askUser: function [
+askUser: func [
     correct [text!]
     request [text!]
     success [text!]
@@ -94,7 +94,8 @@ askUser: function [
     trim/lines resp
     
     if resp == "fight" [
-        fight return
+        fight
+        quit
     ]
     
     if resp == "cheat" [
@@ -113,7 +114,7 @@ askUser: function [
     ]
 ]
 
-askChoice: function [
+askChoice: func [
     choices [block!]
     correct [block!]
     request [text!]
@@ -140,7 +141,7 @@ askChoice: function [
     ]
 ]
 
-begin: function [] [
+begin: func [] [
     print "^/Welcome, brave adventurer! You are about to embark into the curious world of Rebol."
     print "It is a place where few venture. It will require wits, courage and perseverance!"
     
@@ -415,7 +416,7 @@ begin: function [] [
     fight
 ]
 
-fight: function [] [
+fight: func [] [
     print/html "<hr>"
     prin "Level 4"
     print/html "<hr>"
@@ -447,6 +448,195 @@ fight: function [] [
         print "^/^/Too bad, you can't turn back now!"
         prin "^/Press any key to continue ... " input
     ]
+    
+    max: 20
+    health: max
+    healthUndead: max
+    attacks: ["hit" "cut" "kicked" "spit on"]
+    help: false
+    undead-attack: ""
+    actions: 0
+    
+    while [all [health > 0 healthUndead > 0]] [
+        if not help [
+            print "^/^/You have two commands available during the battle."
+            print "You can only perform one of them on each turn."
+            
+            print/html "<code>attack</code>"
+            print "^/^^ This will damage the creature's health by a random amount."
+            
+            print/html "<code>heal</code>"
+            print "^/^^ This will heal your health by a random amount."
+            
+            prin "^/^/Press any key to continue ... " input
+            
+            prin "^/"
+            print/html "<hr>"
+            
+            print "^/You can also specify a defensive move when the creature attacks you."
+            print "You can do this by entering a Rebol conditional on the same line."
+            
+            print "^/Here are the attacks available to the creature ..."
+            print/html "<code>attacks: [^"hit^" ^"cut^" ^"kicked^" ^"spit on^"]</code>"
+            
+            print "^/If you can guess the move it will make, then you get an extra ^"attack^" or ^"heal^"."
+            print "Here is an example of what an IF condition looks like in Rebol."
+            
+            print/html "<code>if undead-attack == attacks/2 [ heal ]</code>"
+            
+            print "^/The ^"undead-attack^" word will hold the value of the attack the creature makes,"
+            print "and you can specify the extra command to run within the conditional brackets []"
+            
+            print "^/Commands can be entered alone or with a conditional on the same line, e.g."
+            
+            print/html "<code>attack if undead-attack == attacks/2 [ heal ]</code>"
+            
+            prin "^/Press any key to start the battle ... " input
+            
+            prin "^/"
+            print/html "<hr>"
+            
+            print "The creature's eyes lock onto yours, and it moves toward you."
+            
+            help: true
+        ]
+        
+        prin "^/  Your Health ["
+        
+        loop health [prin "+"]
+        loop max - health [prin "-"]
+        
+        prin "]"
+        
+        prin "^/Undead Health ["
+        
+        loop healthUndead [prin "+"]
+        loop max - healthUndead [prin "-"]
+        
+        prin "]"
+        
+        prin "^/^/What do you want to do? " resp: input
+        
+        trim/lines resp
+        
+        attack: func [] [
+            if not empty? undead-attack [
+                prin rejoin ["^/^/The creature tries to " undead-attack " you, but it misses!"]
+            ]
+            
+            hit: random healthUndead
+            healthUndead: me - hit
+            
+            prin rejoin ["^/^/You " pick attacks random length? attacks " the creature for " hit " damage! "]
+            
+            actions: me + 1
+        ]
+        
+        heal: func [] [
+            if not empty? undead-attack [
+                prin rejoin ["^/^/The creature tries to " undead-attack " you, but it misses!"]
+            ]
+            
+            either health < max [
+                heal: random max - health
+                health: me + heal
+                
+                prin rejoin ["^/^/Your health increases by " heal]
+            ][
+                prin "^/^/You fool! You already have full health."
+            ]
+            
+            actions: me + 1
+        ]
+        
+        parse resp rules: [
+            copy command to [" " | end] copy conditional to end
+                (switch command [
+                    "attack" [attack]
+                    "heal" [heal]
+                    prin "^/^/You lose your balance and miss a move!"
+                ])
+        ]
+        
+        trim/lines conditional
+        
+        either all [random true healthUndead < max] [
+            heal: random max - healthUndead
+            healthUndead: me + heal
+            
+            prin rejoin ["^/^/The creature's health has increased by " heal]
+        ][
+            if healthUndead > 0 [
+                undead-attack: pick attacks random length? attacks
+                actionsBefore: actions
+                
+                if not empty? conditional [
+                    attempt [
+                        do conditional
+                    ][
+                        prin "^/^/You tried to defend with an invalid conditional."
+                    ]
+                    
+                    
+                ]
+                
+                if actions == actionsBefore [
+                    hit: random health
+                    health: me - hit
+                    
+                    prin rejoin ["^/^/The creature has " undead-attack " you for " hit " damage! "]
+                    
+                    if not empty? conditional [
+                        prin "^/^/You did not guess the correct attack."
+                    ]
+                ]
+                
+                undead-attack: ""
+            ]
+        ]
+        
+        prin "^/"
+    ]
+    
+    either health > 0 [
+        prin "^/"
+        print/html "<img src='/game/icons/treasure.png' width='100'>"
+        print "Congratulations! You have defeated the creature and stolen its treasure!"
+        
+        js-do {
+            // Zip-a-Dee-Doo-Dah 
+            playNote('E', 750 / 2)
+            playNote('E', 250 / 2)
+            playNote('F', 500 / 2)
+            playNote('G', 1000 / 2)
+            playNote('C', 1500 / 2)
+            
+            playNote('A', 750 / 2)
+            playNote('A', 250 / 2)
+            playNote('F', 500 / 2)
+            playNote('G', 2500 / 2)
+            
+            playNote('C', 1000 / 2)
+            playNote('C', 1000 / 2)
+            
+            playNote('A', 500 / 2)
+            playNote('G', 500 / 2)
+            playNote('E', 500 / 2)
+            playNote('C', 500 / 2)
+            
+            playNote('E', 500 / 2)
+            playNote('C', 500 / 2)
+            playNote('E', 500 / 2)
+            playNote('D', 2500 / 2)
+        }
+    ][
+        prin "^/"
+        print/html "<img src='/game/icons/skull.png' width='100'>"
+        print "You died. Oh, and it looks like the creature took a snack for the road."
+    ]
+    
+    prin "^/Press any key to quit ... " input
+    prin "^/"
 ]
 
 begin
