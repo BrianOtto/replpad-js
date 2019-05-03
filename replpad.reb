@@ -87,7 +87,7 @@ replpad-write: js-awaiter [
     let html = reb.Did(reb.ArgR('html'))
 
     if (html) {
-        replpad.appendChild(load(param))
+        replpad.insertAdjacentHTML('beforeend', param)
         return
     }
 
@@ -172,7 +172,7 @@ print: function [
 ]
 
 
-input: js-awaiter [
+read-stdin: js-awaiter [
     {Read single-line or multi-line input from the user}
     return: [text!]
 ]{
@@ -862,7 +862,7 @@ sys/export [
     wait
     write-stdout
     print
-    input
+    read-stdin
     read
     write
     browse
